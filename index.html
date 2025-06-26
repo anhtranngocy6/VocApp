@@ -743,14 +743,21 @@
                     
                     if (text) {
                         const encodedText = encodeURIComponent(text);
-                        // Using an unofficial Google Translate TTS endpoint.
+                        // Using an unofficial Google Translate TTS endpoint via a CORS proxy.
                         // This is not a public API and might break without notice.
-                        const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=${lang}&client=tw-ob`;
+                        const googleUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=${lang}&client=tw-ob`;
+                        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(googleUrl)}`;
                         
-                        currentAudio = new Audio(url);
+                        currentAudio = new Audio(proxyUrl);
                         currentAudio.play().catch(e => {
-                            console.error("Error playing Google TTS audio:", e);
-                            UIModule.showModal({ title: "Lỗi Âm thanh", message: "Không thể phát âm thanh. Vui lòng kiểm tra kết nối mạng." });
+                            // The 'AbortError' is expected if the user clicks another speak button
+                            // before the current audio finishes. We can safely ignore it.
+                            if (e.name !== 'AbortError') {
+                                console.error("Error playing proxied Google TTS audio:", e);
+                                UIModule.showModal({ title: "Lỗi Âm thanh", message: "Không thể phát âm thanh. Vấn đề có thể do kết nối mạng hoặc dịch vụ trung gian." });
+                            } else {
+                                console.log('Playback aborted by a new request.');
+                            }
                         });
                     }
                 }
