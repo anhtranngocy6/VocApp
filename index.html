@@ -539,7 +539,7 @@
          * -------------------
          */
         const GeminiModule = (() => {
-            const API_KEY = "AIzaSyCWgdZlzRHZFLL02TnfZHAEXlTvUIZE7OM"; // Kept empty as per instructions
+            const API_KEY = "AIzaSyCWgdZlzRHZFLL02TnfZHAEXlTvUIZE7OM"; // PASTE YOUR API KEY HERE
             const BASE_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
             async function callApi(payload) {
@@ -728,37 +728,64 @@
         /**
          * -------------------
          * SPEECH MODULE
-         * Uses Google Translate's unofficial TTS endpoint for high-quality audio.
+         * Uses the browser's native SpeechSynthesis API for reliable audio playback.
          * -------------------
          */
         const SpeechModule = (() => {
-            let currentAudio = null;
+            const synth = window.speechSynthesis;
+            let voices = [];
+
+            function populateVoiceList() {
+                if (typeof synth === 'undefined') {
+                    console.error("Browser does not support SpeechSynthesis.");
+                    return;
+                }
+                voices = synth.getVoices();
+            }
+
+            // The 'voiceschanged' event is crucial for getting the list of voices,
+            // as they are often loaded asynchronously.
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = populateVoiceList;
+            }
+            // Call it once to handle browsers that load voices immediately.
+            populateVoiceList();
 
             return {
-                speak: (text, lang = 'en') => {
-                    if (currentAudio) {
-                        currentAudio.pause();
-                        currentAudio = null;
+                speak: (text, lang = 'en-US') => {
+                    if (synth.speaking) {
+                        synth.cancel(); // Stop any currently speaking utterance
                     }
                     
                     if (text) {
-                        const encodedText = encodeURIComponent(text);
-                        // Using an unofficial Google Translate TTS endpoint via a CORS proxy.
-                        // This is not a public API and might break without notice.
-                        const googleUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=${lang}&client=tw-ob`;
-                        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(googleUrl)}`;
+                        const utterThis = new SpeechSynthesisUtterance(text);
                         
-                        currentAudio = new Audio(proxyUrl);
-                        currentAudio.play().catch(e => {
-                            // The 'AbortError' is expected if the user clicks another speak button
-                            // before the current audio finishes. We can safely ignore it.
-                            if (e.name !== 'AbortError') {
-                                console.error("Error playing proxied Google TTS audio:", e);
-                                UIModule.showModal({ title: "Lỗi Âm thanh", message: "Không thể phát âm thanh. Vấn đề có thể do kết nối mạng hoặc dịch vụ trung gian." });
-                            } else {
-                                console.log('Playback aborted by a new request.');
-                            }
-                        });
+                        utterThis.onerror = (event) => {
+                            console.error('SpeechSynthesisUtterance.onerror', event);
+                            UIModule.showModal({ title: "Lỗi Âm thanh", message: `Không thể phát âm thanh: ${event.error}` });
+                        };
+                        
+                        // Populate voices again just in case they were not ready before.
+                        if (voices.length === 0) {
+                           populateVoiceList();
+                        }
+
+                        let selectedVoice;
+                        if (lang.startsWith('vi')) {
+                           selectedVoice = voices.find(voice => voice.lang === 'vi-VN');
+                           utterThis.rate = 0.9;
+                        } else { // default to English
+                           // Prioritize high-quality, known voices
+                           selectedVoice = voices.find(voice => voice.lang === 'en-US' && /Google|Microsoft/.test(voice.name));
+                           if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang === 'en-US');
+                           if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
+                           utterThis.rate = 0.85; // Slower rate for English
+                        }
+
+                        utterThis.voice = selectedVoice;
+                        utterThis.lang = lang;
+                        utterThis.pitch = 1;
+                        synth.speak(utterThis);
                     }
                 }
             };
@@ -820,11 +847,11 @@
                 DOM.backToUploadBtn.addEventListener('click', () => UI.showScreen('upload-section'));
 
                 // Speech
-                DOM.mainSpeakerBtn.addEventListener('click', () => { if (state.currentWord) Speech.speak(state.currentWord.Word); });
-                DOM.answerSpeakerBtn.addEventListener('click', () => { if (state.currentWord) Speech.speak(state.currentWord.Word); });
-                DOM.ieltsExampleSpeakerBtn.addEventListener('click', () => Speech.speak(DOM.ieltsExampleSentence.textContent.replace('🇬🇧 ', '')));
-                DOM.commExampleSpeakerBtn.addEventListener('click', () => Speech.speak(DOM.commExampleSentence.textContent.replace('🇬🇧 ', '')));
-                DOM.singleExampleSpeakerBtn.addEventListener('click', () => Speech.speak(DOM.exampleSentence.textContent.replace('🇬🇧 ', '')));
+                DOM.mainSpeakerBtn.addEventListener('click', () => { if (state.currentWord) Speech.speak(state.currentWord.Word, 'en-US'); });
+                DOM.answerSpeakerBtn.addEventListener('click', () => { if (state.currentWord) Speech.speak(state.currentWord.Word, 'en-US'); });
+                DOM.ieltsExampleSpeakerBtn.addEventListener('click', () => Speech.speak(DOM.ieltsExampleSentence.textContent.replace('🇬🇧 ', ''), 'en-US'));
+                DOM.commExampleSpeakerBtn.addEventListener('click', () => Speech.speak(DOM.commExampleSentence.textContent.replace('🇬🇧 ', ''), 'en-US'));
+                DOM.singleExampleSpeakerBtn.addEventListener('click', () => Speech.speak(DOM.exampleSentence.textContent.replace('🇬🇧 ', ''), 'en-US'));
 
                 DOM.speakBtn.addEventListener('click', () => {
                     if (state.recognition) {
@@ -1158,9 +1185,11 @@
 
             return {
                 init: () => {
-                    UI.showScreen('upload-section');
-                    setupEventListeners();
-                    initSpeechRecognition();
+                    document.addEventListener('DOMContentLoaded', () => {
+                         UI.showScreen('upload-section');
+                         setupEventListeners();
+                         initSpeechRecognition();
+                    });
                 }
             };
         })(UIModule, DataModule, SpeechModule, GeminiModule);
