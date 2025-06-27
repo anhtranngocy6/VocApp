@@ -82,6 +82,7 @@
 <body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
 
     <div class="w-full max-w-2xl mx-auto screen-wrapper">
+        <!-- Section 1: Upload -->
         <div id="upload-section" class="screen">
             <div class="bg-white p-8 rounded-2xl shadow-xl shadow-slate-300/60 text-center">
                 <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mb-6">
@@ -101,11 +102,15 @@
                         ✨ Tạo bộ từ vựng bằng AI
                     </button>
                 </div>
+                 <div class="mt-6">
+                     <button id="clear-data-btn" class="text-sm text-slate-500 hover:text-red-600 transition-colors">Xóa dữ liệu cũ & Bắt đầu lại</button>
+                 </div>
                 <p id="file-name-display" class="text-sm text-slate-500 mt-4 h-5"></p>
                 <p id="upload-error" class="text-sm text-red-500 mt-1 h-5"></p>
             </div>
         </div>
         
+        <!-- Section 2: Topic Selection -->
         <div id="topic-section" class="screen hidden">
              <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl shadow-slate-300/60">
                 <header class="text-center mb-6">
@@ -113,13 +118,16 @@
                     <p id="selection-subheader" class="text-slate-500">Tập trung vào một chủ đề để học hiệu quả hơn.</p>
                 </header>
                  <div id="special-selection-list" class="space-y-3 mb-6">
-                    </div>
+                    <!-- Review and All buttons will be inserted here -->
+                </div>
                 <div id="selection-list" class="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[28rem] overflow-y-auto p-1">
-                    </div>
-                 <button id="back-to-upload-btn" class="mt-6 w-full text-center text-sm text-slate-500 hover:text-indigo-600 font-medium">Quay lại</button>
+                    <!-- Topic/Pack buttons will be inserted here -->
+                </div>
+                 <button id="back-to-upload-btn" class="mt-6 w-full text-center text-sm text-slate-500 hover:text-indigo-600 font-medium">Bắt đầu phiên mới</button>
             </div>
         </div>
 
+        <!-- Section 3: Main App -->
         <div id="app-container" class="screen hidden">
             <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl shadow-slate-300/60">
                 <header class="text-center mb-4 relative">
@@ -190,12 +198,14 @@
                              <p class="answer-ipa text-md" id="correct-ipa"></p>
                              <p class="answer-meaning text-md font-semibold mt-1" id="correct-meaning"></p>
                              
+                             <!-- Example Container -->
                              <div id="example-container" class="mt-3 pt-3 border-t border-slate-200/80">
                                  <div id="example-loader" class="hidden items-center">
                                      <div class="loader !w-4 !h-4 !border-teal-500 !border-b-transparent"></div>
                                      <span class="text-xs text-slate-500 ml-2">AI đang tạo ví dụ...</span>
                                  </div>
                                  <div id="example-content" class="text-sm space-y-3">
+                                     <!-- IELTS Example -->
                                      <div id="ielts-example-container" class="hidden">
                                         <div class="flex items-center justify-between">
                                              <p class="font-semibold text-slate-700">Ví dụ (IELTS):</p>
@@ -206,6 +216,7 @@
                                          <p id="ielts-example-sentence" class="text-slate-800"></p>
                                          <p id="ielts-example-sentence-vi" class="text-slate-600"></p>
                                      </div>
+                                     <!-- Communication Example -->
                                      <div id="comm-example-container" class="hidden">
                                         <div class="flex items-center justify-between">
                                              <p class="font-semibold text-slate-700">Ví dụ (Giao tiếp):</p>
@@ -216,7 +227,8 @@
                                          <p id="comm-example-sentence" class="text-slate-800"></p>
                                          <p id="comm-example-sentence-vi" class="text-slate-600"></p>
                                      </div>
-                                      <div id="single-example-container" class="hidden">
+                                      <!-- Single pre-existing example -->
+                                     <div id="single-example-container" class="hidden">
                                          <div class="flex items-center justify-between">
                                               <p class="font-semibold text-slate-700">Ví dụ:</p>
                                               <button id="single-example-speaker-btn" title="Đọc câu ví dụ" class="text-slate-400 hover:text-indigo-600 transition-colors">
@@ -230,6 +242,7 @@
                                  </div>
                              </div>
 
+                             <!-- Gemini Features Container -->
                              <div id="gemini-features-container" class="mt-3 pt-3 border-t border-slate-200/80">
                                  <button id="generate-example-btn" class="text-sm font-medium text-teal-600 hover:text-teal-700 flex items-center gap-1.5">
                                     <span id="gemini-btn-loader" class="hidden"><span class="loader !w-4 !h-4"></span></span>
@@ -258,6 +271,7 @@
         </div>
     </div>
     
+    <!-- Modal for general messages and Gemini topic input -->
     <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
         <div class="bg-white p-6 rounded-2xl shadow-xl max-w-sm w-full text-center">
             <h3 id="modal-title" class="text-lg font-bold text-slate-800 mb-2"></h3>
@@ -291,6 +305,7 @@
                 fileNameDisplay: document.getElementById('file-name-display'),
                 uploadError: document.getElementById('upload-error'),
                 generateVocabBtn: document.getElementById('generate-vocab-btn'),
+                clearDataBtn: document.getElementById('clear-data-btn'),
                 // Topic Selection
                 selectionHeader: document.getElementById('selection-header'),
                 selectionSubheader: document.getElementById('selection-subheader'),
@@ -528,7 +543,7 @@
          * -------------------
          */
         const GeminiModule = (() => {
-            const API_KEY = "AIzaSyCWgdZlzRHZFLL02TnfZHAEXlTvUIZE7OM"; // PASTE YOUR API KEY HERE
+            const API_KEY = ""; // PASTE YOUR API KEY HERE
             const BASE_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
             async function callApi(payload) {
@@ -714,15 +729,68 @@
             };
         })();
 
+       /**
+         * -------------------
+         * STORAGE MODULE
+         * Handles saving and loading data from localStorage.
+         * -------------------
+         */
+        const StorageModule = (() => {
+            const FULL_LIST_KEY = 'vocabApp_fullList';
+            const INCORRECT_WORDS_KEY = 'vocabApp_incorrectWords';
+
+            return {
+                saveFullList: (list) => {
+                    try {
+                        localStorage.setItem(FULL_LIST_KEY, JSON.stringify(list));
+                    } catch (e) {
+                        console.error("Error saving full list to localStorage:", e);
+                    }
+                },
+                loadFullList: () => {
+                    try {
+                        const list = localStorage.getItem(FULL_LIST_KEY);
+                        return list ? JSON.parse(list) : null;
+                    } catch (e) {
+                        console.error("Error loading full list from localStorage:", e);
+                        return null;
+                    }
+                },
+                saveIncorrectWords: (wordsSet) => {
+                    try {
+                        const arr = Array.from(wordsSet);
+                        localStorage.setItem(INCORRECT_WORDS_KEY, JSON.stringify(arr));
+                    } catch (e) {
+                        console.error("Error saving incorrect words to localStorage:", e);
+                    }
+                },
+                loadIncorrectWords: () => {
+                    try {
+                        const arr = localStorage.getItem(INCORRECT_WORDS_KEY);
+                        return arr ? new Set(JSON.parse(arr)) : new Set();
+                    } catch (e) {
+                        console.error("Error loading incorrect words from localStorage:", e);
+                        return new Set();
+                    }
+                },
+                clearAllData: () => {
+                    localStorage.removeItem(FULL_LIST_KEY);
+                    localStorage.removeItem(INCORRECT_WORDS_KEY);
+                }
+            };
+        })();
+
+
         /**
          * -------------------
          * SPEECH MODULE
-         * Uses the browser's native SpeechSynthesis API with chunking for reliability.
+         * Uses the browser's native SpeechSynthesis API with a smarter voice selection.
          * -------------------
          */
         const SpeechModule = (() => {
             const synth = window.speechSynthesis;
             let voices = [];
+            const utterances = []; // Prevent garbage collection
 
             function populateVoiceList() {
                 if (typeof synth === 'undefined') {
@@ -736,33 +804,6 @@
                 speechSynthesis.onvoiceschanged = populateVoiceList;
             }
             populateVoiceList();
-            
-            // Function to break text into smaller, speakable chunks.
-            function getChunks(text) {
-                const MAX_CHUNK_LENGTH = 160; 
-                const chunks = [];
-                // Use a regex that splits by sentence-ending punctuation.
-                const sentences = text.match(/[^.!?]+[.!?]*|[^.!?]+$/g) || [];
-
-                sentences.forEach(sentence => {
-                    let tempSentence = sentence.trim();
-                    while (tempSentence.length > 0) {
-                        if (tempSentence.length <= MAX_CHUNK_LENGTH) {
-                            chunks.push(tempSentence);
-                            break;
-                        }
-                        
-                        // Find the last space within the max length to avoid cutting words
-                        let cutOff = tempSentence.lastIndexOf(' ', MAX_CHUNK_LENGTH);
-                        if (cutOff === -1) {
-                            cutOff = MAX_CHUNK_LENGTH; // If no space, cut at max length
-                        }
-                        chunks.push(tempSentence.substring(0, cutOff));
-                        tempSentence = tempSentence.substring(cutOff).trim();
-                    }
-                });
-                return chunks.filter(c => c);
-            }
 
             return {
                 speak: (text, lang = 'en-US') => {
@@ -771,36 +812,46 @@
                     }
                     
                     if (text) {
+                        const utterThis = new SpeechSynthesisUtterance(text);
+                        
+                        utterThis.onend = () => {
+                            const index = utterances.indexOf(utterThis);
+                            if (index > -1) {
+                                utterances.splice(index, 1);
+                            }
+                        };
+                        
+                        utterThis.onerror = (event) => {
+                            console.error('SpeechSynthesisUtterance.onerror', event);
+                            const index = utterances.indexOf(utterThis);
+                            if (index > -1) {
+                                utterances.splice(index, 1);
+                            }
+                        };
+                        
                         if (voices.length === 0) {
                            populateVoiceList();
                         }
 
-                        const chunks = getChunks(text);
+                        let selectedVoice;
+                        if (lang.startsWith('vi')) {
+                           selectedVoice = voices.find(voice => voice.lang === 'vi-VN');
+                           utterThis.rate = 0.9;
+                           utterThis.pitch = 1;
+                        } else { 
+                           selectedVoice = voices.find(voice => voice.lang === 'en-US' && /female/i.test(voice.name));
+                           if (!selectedVoice) selectedVoice = voices.find(voice => voice.name === 'Google US English');
+                           if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang === 'en-US');
+                           if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
+                           
+                           utterThis.rate = 0.8; 
+                           utterThis.pitch = 1; 
+                        }
 
-                        chunks.forEach(chunk => {
-                            const utterThis = new SpeechSynthesisUtterance(chunk);
-                            
-                            utterThis.onerror = (event) => {
-                                console.error('SpeechSynthesisUtterance.onerror', event);
-                                UIModule.showModal({ title: "Lỗi Âm thanh", message: `Không thể phát âm thanh: ${event.error}` });
-                            };
-
-                            let selectedVoice;
-                            if (lang.startsWith('vi')) {
-                               selectedVoice = voices.find(voice => voice.lang === 'vi-VN');
-                               utterThis.rate = 0.9;
-                            } else { 
-                               selectedVoice = voices.find(voice => voice.lang === 'en-US' && /Google|Microsoft/.test(voice.name));
-                               if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang === 'en-US');
-                               if (!selectedVoice) selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
-                               utterThis.rate = 0.85; 
-                            }
-
-                            utterThis.voice = selectedVoice;
-                            utterThis.lang = lang;
-                            utterThis.pitch = 1;
-                            synth.speak(utterThis);
-                        });
+                        utterThis.voice = selectedVoice;
+                        utterThis.lang = lang;
+                        utterances.push(utterThis); // Keep a reference to prevent garbage collection
+                        synth.speak(utterThis);
                     }
                 }
             };
@@ -812,7 +863,7 @@
          * The main controller that orchestrates the app.
          * -------------------
          */
-        const App = ((UI, Data, Speech, Gemini) => {
+        const App = ((UI, Data, Speech, Gemini, Storage) => {
             const DOM = UI.getDOMElements();
             let state = {
                 sessionVocabularyList: [],
@@ -831,7 +882,12 @@
 
             const normalizeString = (str) => {
                 if (typeof str !== 'string') return '';
-                return str.normalize('NFC').trim().toLowerCase();
+                // Remove punctuation and convert to lowercase
+                return str
+                    .normalize('NFC')
+                    .trim()
+                    .toLowerCase()
+                    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
             };
             
             const setupEventListeners = () => {
@@ -859,7 +915,20 @@
                 });
                 
                 DOM.backToSelectionBtn.addEventListener('click', renderTopicView);
-                DOM.backToUploadBtn.addEventListener('click', () => UI.showScreen('upload-section'));
+                DOM.backToUploadBtn.addEventListener('click', () => {
+                    Storage.clearAllData();
+                    location.reload();
+                });
+                DOM.clearDataBtn.addEventListener('click', () => {
+                    UI.showModal({
+                        title: 'Xác nhận Xóa',
+                        message: 'Bạn có chắc muốn xóa toàn bộ dữ liệu đã lưu và bắt đầu lại không?',
+                        onConfirm: () => {
+                            Storage.clearAllData();
+                            location.reload();
+                        }
+                    })
+                });
 
                 // Speech
                 DOM.mainSpeakerBtn.addEventListener('click', () => { if (state.currentWord) Speech.speak(state.currentWord.Word, 'en-US'); });
@@ -901,6 +970,8 @@
                         try {
                             const vocabList = await Gemini.generateVocabList(topic.trim());
                             if (Data.loadData(vocabList, (msg) => UI.showModal({title: 'Lỗi', message: msg}))) {
+                                Storage.saveFullList(vocabList);
+                                Storage.saveIncorrectWords(new Set()); // Reset incorrect words
                                 state.incorrectWords.clear();
                                 renderTopicView();
                             } else {
@@ -964,6 +1035,8 @@
                     const data = e.target.result;
                     const parsedData = Data.parseXLSX(data, (msg) => { DOM.uploadError.textContent = msg; });
                     if(Data.loadData(parsedData, (msg) => { DOM.uploadError.textContent = msg; })) {
+                         Storage.saveFullList(parsedData);
+                         Storage.saveIncorrectWords(new Set()); // Reset incorrect words
                          state.incorrectWords.clear();
                          renderTopicView();
                     } else {
@@ -1113,7 +1186,7 @@
                 const getCorrectAnswers = (field) => field.split(';').flatMap(part => part.split(',')).map(s => normalizeString(s));
                 
                 if (state.gameMode === 'en-vi' || state.gameMode === 'speak') {
-                    const correctAnswers = getCorrectAnswers(state.currentWord.Meaning);
+                    const correctAnswers = getCorrectAnswers(state.gameMode === 'en-vi' ? state.currentWord.Meaning : state.currentWord.Word);
                     isCorrect = correctAnswers.includes(userAnswer);
                 } else {
                     const correctAnswers = getCorrectAnswers(state.currentWord.Word);
@@ -1139,6 +1212,7 @@
                 if (state.isReviewSession) {
                     state.incorrectWords.delete(state.currentWord.Word);
                 }
+                Storage.saveIncorrectWords(state.incorrectWords);
                 
                 UI.showAnswerFeedback(true, state.currentWord);
                 fetchAndShowExamples(state.currentWord);
@@ -1149,6 +1223,7 @@
                 DOM.inputContainer.classList.add('feedback-incorrect');
                 DOM.feedbackIcon.innerHTML = `<svg class="w-6 h-6 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>`;
                 state.incorrectWords.add(state.currentWord.Word);
+                Storage.saveIncorrectWords(state.incorrectWords);
                 DOM.checkBtn.disabled = true;
                 DOM.answerInput.disabled = true;
                 state.readyForNext = true;
@@ -1201,13 +1276,21 @@
             return {
                 init: () => {
                     document.addEventListener('DOMContentLoaded', () => {
-                         UI.showScreen('upload-section');
                          setupEventListeners();
                          initSpeechRecognition();
+                         const savedList = Storage.loadFullList();
+                         const savedIncorrectWords = Storage.loadIncorrectWords();
+                         if(savedList) {
+                            Data.loadData(savedList, (err) => console.error(err));
+                            state.incorrectWords = savedIncorrectWords;
+                            renderTopicView();
+                         } else {
+                            UI.showScreen('upload-section');
+                         }
                     });
                 }
             };
-        })(UIModule, DataModule, SpeechModule, GeminiModule);
+        })(UIModule, DataModule, SpeechModule, GeminiModule, StorageModule);
 
         App.init();
     </script>
