@@ -77,6 +77,20 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        /* Custom Scrollbar for Pack Selector */
+        #pack-buttons-container::-webkit-scrollbar {
+            height: 4px;
+        }
+        #pack-buttons-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        #pack-buttons-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+        #pack-buttons-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
 <body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
@@ -103,7 +117,7 @@
                     </button>
                 </div>
                  <div class="mt-6">
-                     <button id="clear-data-btn" class="text-sm text-slate-500 hover:text-red-600 transition-colors">Xóa dữ liệu cũ & Bắt đầu lại</button>
+                    <button id="clear-data-btn" class="text-sm text-slate-500 hover:text-red-600 transition-colors">Xóa dữ liệu cũ & Bắt đầu lại</button>
                  </div>
                 <p id="file-name-display" class="text-sm text-slate-500 mt-4 h-5"></p>
                 <p id="upload-error" class="text-sm text-red-500 mt-1 h-5"></p>
@@ -133,7 +147,7 @@
                 <header class="text-center mb-4 relative">
                     <button id="back-to-selection-btn" class="absolute left-0 top-1 text-slate-500 hover:text-indigo-600 transition-colors" title="Quay lại chọn chủ đề/gói">
                         <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                           <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
                     <h1 id="app-title" class="text-2xl font-bold text-slate-800">Topic: </h1>
@@ -141,9 +155,10 @@
                 </header>
 
                 <main>
-                    <div id="pack-selector-container" class="hidden mb-4 text-center">
-                        <label for="pack-selector" class="text-sm font-medium text-slate-600 mr-2">Chuyển gói:</label>
-                        <select id="pack-selector" class="rounded-md border-slate-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm py-1"></select>
+                    <div id="pack-selector-container" class="hidden mb-4">
+                        <div id="pack-buttons-container" class="flex items-center gap-2 overflow-x-auto pb-2 -mb-2">
+                            <!-- Pack buttons will be inserted here by JavaScript -->
+                        </div>
                     </div>
 
                     <div class="mb-6">
@@ -151,15 +166,15 @@
                              <div>
                                 <input type="radio" id="mode-vi-en" name="game-mode" value="vi-en" checked class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500 cursor-pointer">
                                 <label for="mode-vi-en" class="ml-2 text-slate-700 cursor-pointer">Việt → Anh</label>
-                            </div>
+                             </div>
                             <div id="ipa-mode-container" class="hidden">
                                 <input type="radio" id="mode-ipa" name="game-mode" value="ipa" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500 cursor-pointer">
                                 <label for="mode-ipa" class="ml-2 text-slate-700 cursor-pointer">IPA → Anh</label>
                             </div>
-                            <div>
+                             <div>
                                 <input type="radio" id="mode-en-vi" name="game-mode" value="en-vi" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500 cursor-pointer">
                                 <label for="mode-en-vi" class="ml-2 text-slate-700 cursor-pointer">Anh → Việt</label>
-                            </div>
+                             </div>
                             <div id="speak-mode-container" class="hidden">
                                 <input type="radio" id="mode-speak" name="game-mode" value="speak" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500 cursor-pointer">
                                 <label for="mode-speak" class="ml-2 text-slate-700 cursor-pointer">Luyện nói (Anh)</label>
@@ -193,7 +208,7 @@
                                 <button id="answer-speaker-btn" class="text-slate-400 hover:text-indigo-600 transition-colors">
                                     <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.66 1.905H6.44l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z" /><path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z" /></svg>
                                 </button>
-                            </div>
+                             </div>
                              <p class="answer-word text-lg font-bold" id="correct-word"></p>
                              <p class="answer-ipa text-md" id="correct-ipa"></p>
                              <p class="answer-meaning text-md font-semibold mt-1" id="correct-meaning"></p>
@@ -207,34 +222,34 @@
                                  <div id="example-content" class="text-sm space-y-3">
                                      <!-- IELTS Example -->
                                      <div id="ielts-example-container" class="hidden">
-                                        <div class="flex items-center justify-between">
-                                             <p class="font-semibold text-slate-700">Ví dụ (IELTS):</p>
-                                             <button id="ielts-example-speaker-btn" title="Đọc câu ví dụ IELTS" class="text-slate-400 hover:text-indigo-600 transition-colors">
-                                                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.66 1.905H6.44l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z" /><path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z" /></svg>
-                                             </button>
-                                         </div>
+                                         <div class="flex items-center justify-between">
+                                              <p class="font-semibold text-slate-700">Ví dụ (IELTS):</p>
+                                              <button id="ielts-example-speaker-btn" title="Đọc câu ví dụ IELTS" class="text-slate-400 hover:text-indigo-600 transition-colors">
+                                                   <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.66 1.905H6.44l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z" /><path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z" /></svg>
+                                              </button>
+                                          </div>
                                          <p id="ielts-example-sentence" class="text-slate-800"></p>
                                          <p id="ielts-example-sentence-vi" class="text-slate-600"></p>
                                      </div>
                                      <!-- Communication Example -->
                                      <div id="comm-example-container" class="hidden">
-                                        <div class="flex items-center justify-between">
-                                             <p class="font-semibold text-slate-700">Ví dụ (Giao tiếp):</p>
-                                              <button id="comm-example-speaker-btn" title="Đọc câu ví dụ Giao tiếp" class="text-slate-400 hover:text-indigo-600 transition-colors">
-                                                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.66 1.905H6.44l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z" /><path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z" /></svg>
-                                             </button>
-                                         </div>
+                                         <div class="flex items-center justify-between">
+                                              <p class="font-semibold text-slate-700">Ví dụ (Giao tiếp):</p>
+                                               <button id="comm-example-speaker-btn" title="Đọc câu ví dụ Giao tiếp" class="text-slate-400 hover:text-indigo-600 transition-colors">
+                                                   <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.66 1.905H6.44l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z" /><path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z" /></svg>
+                                              </button>
+                                          </div>
                                          <p id="comm-example-sentence" class="text-slate-800"></p>
                                          <p id="comm-example-sentence-vi" class="text-slate-600"></p>
                                      </div>
-                                      <!-- Single pre-existing example -->
+                                     <!-- Single pre-existing example -->
                                      <div id="single-example-container" class="hidden">
-                                         <div class="flex items-center justify-between">
-                                              <p class="font-semibold text-slate-700">Ví dụ:</p>
-                                              <button id="single-example-speaker-btn" title="Đọc câu ví dụ" class="text-slate-400 hover:text-indigo-600 transition-colors">
-                                                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.66 1.905H6.44l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z" /><path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z" /></svg>
-                                             </button>
-                                         </div>
+                                          <div class="flex items-center justify-between">
+                                               <p class="font-semibold text-slate-700">Ví dụ:</p>
+                                               <button id="single-example-speaker-btn" title="Đọc câu ví dụ" class="text-slate-400 hover:text-indigo-600 transition-colors">
+                                                   <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.66 1.905H6.44l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z" /><path d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z" /></svg>
+                                              </button>
+                                          </div>
                                          <p id="example-sentence" class="text-slate-800"></p>
                                          <p id="example-sentence-vi" class="text-slate-600"></p>
                                      </div>
@@ -257,14 +272,9 @@
                         </div>
                     </div>
 
-                    <div class="mt-8 text-center">
-                        <div class="flex justify-between items-center mb-1 text-sm">
-                            <span class="text-slate-600">Tiến độ</span>
-                            <span class="font-medium text-slate-700"><span id="learned-count">0</span> / <span id="total-count">0</span></span>
-                        </div>
-                        <div class="w-full bg-slate-200 rounded-full h-2.5">
-                            <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500"></div>
-                        </div>
+                    <!-- New Stats Container -->
+                    <div id="stats-container" class="mt-8 space-y-6">
+                        <!-- Content will be generated by JavaScript -->
                     </div>
                 </main>
             </div>
@@ -316,7 +326,7 @@
                 appTitle: document.getElementById('app-title'),
                 backToSelectionBtn: document.getElementById('back-to-selection-btn'),
                 packSelectorContainer: document.getElementById('pack-selector-container'),
-                packSelector: document.getElementById('pack-selector'),
+                packButtonsContainer: document.getElementById('pack-buttons-container'),
                 instructionText: document.getElementById('instruction-text'),
                 modeSelector: document.getElementById('mode-selector'),
                 ipaModeContainer: document.getElementById('ipa-mode-container'),
@@ -327,9 +337,7 @@
                 answerInput: document.getElementById('answer-input'),
                 checkBtn: document.getElementById('check-btn'),
                 nextBtn: document.getElementById('next-btn'),
-                learnedCountEl: document.getElementById('learned-count'),
-                totalCountEl: document.getElementById('total-count'),
-                progressBar: document.getElementById('progress-bar'),
+                statsContainer: document.getElementById('stats-container'),
                 inputContainer: document.getElementById('input-container'),
                 feedbackIcon: document.getElementById('feedback-icon'),
                 // Answer Display
@@ -414,11 +422,89 @@
                     });
                 },
 
-                updateProgress: (learnedCount, totalCount) => {
-                    DOMElements.learnedCountEl.textContent = learnedCount;
-                    DOMElements.totalCountEl.textContent = totalCount;
-                    const percentage = totalCount > 0 ? (learnedCount / totalCount) * 100 : 0;
-                    DOMElements.progressBar.style.width = `${percentage}%`;
+                renderPackButtons: (packs, activeIndex, clickHandler) => {
+                    const container = DOMElements.packButtonsContainer;
+                    container.innerHTML = '';
+                    if (!packs || packs.length === 0) {
+                        DOMElements.packSelectorContainer.classList.add('hidden');
+                        return;
+                    }
+                    DOMElements.packSelectorContainer.classList.remove('hidden');
+                    
+                    packs.forEach(pack => {
+                        const button = document.createElement('button');
+                        
+                        const baseClasses = 'px-4 py-2 text-sm font-semibold rounded-md transition-colors whitespace-nowrap';
+                        const activeClasses = 'bg-indigo-600 text-white shadow';
+                        const completedClasses = 'bg-teal-500 text-white hover:bg-teal-600';
+                        const inProgressClasses = 'bg-yellow-100 text-yellow-800 border border-yellow-300 hover:bg-yellow-200';
+                        const inactiveClasses = 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-300';
+                        
+                        if (pack.index === activeIndex) {
+                             button.className = `${baseClasses} ${activeClasses}`;
+                        } else if (pack.isCompleted) {
+                            button.className = `${baseClasses} ${completedClasses}`;
+                        } else if (pack.isInProgress) {
+                            button.className = `${baseClasses} ${inProgressClasses}`;
+                        }
+                        else {
+                            button.className = `${baseClasses} ${inactiveClasses}`;
+                        }
+
+                        button.textContent = `Gói ${pack.index + 1}`;
+                        button.onclick = () => clickHandler(pack.index);
+                        container.appendChild(button);
+                    });
+                },
+
+                renderStats: (stats) => {
+                    const sessionPercentage = stats.sessionTotal > 0 ? ((stats.sessionCorrect + stats.sessionIncorrect) / stats.sessionTotal) * 100 : 0;
+                    const topicPercentage = stats.topicTotal > 0 ? (stats.topicMastered / stats.topicTotal) * 100 : 0;
+
+                    const sessionStatsHTML = `
+                        <div>
+                            <h3 class="text-sm font-semibold text-slate-600 mb-3 text-center">Tiến Độ Phiên Học</h3>
+                            <div class="grid grid-cols-3 gap-2 text-center mb-3">
+                                <div>
+                                    <div class="flex items-center justify-center gap-1 text-green-500">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" clip-rule="evenodd" /></svg>
+                                        <span class="text-2xl font-bold">${stats.sessionCorrect}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500">Chính xác</p>
+                                </div>
+                                <div>
+                                    <div class="flex items-center justify-center gap-1 text-red-500">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>
+                                        <span class="text-2xl font-bold">${stats.sessionIncorrect}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500">Sai</p>
+                                </div>
+                                <div>
+                                    <div class="flex items-center justify-center gap-1 text-slate-500">
+                                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM6.75 9.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z" clip-rule="evenodd" /></svg>
+                                        <span class="text-2xl font-bold">${stats.sessionRemaining}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500">Còn lại</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2">
+                                <div class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: ${sessionPercentage}%"></div>
+                            </div>
+                        </div>`;
+
+                    const topicStatsHTML = stats.showTopicStats ? `
+                        <div class="border-t border-slate-200 pt-5">
+                            <h3 class="text-sm font-semibold text-slate-600 mb-2 text-center">Tiến Độ Toàn Chủ Đề</h3>
+                            <div class="flex justify-between items-center mb-1 text-sm">
+                                <span class="text-slate-600">Đã thành thạo</span>
+                                <span class="font-medium text-slate-700">${stats.topicMastered} / ${stats.topicTotal}</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2">
+                                <div class="bg-teal-500 h-2 rounded-full transition-all duration-300" style="width: ${topicPercentage}%"></div>
+                            </div>
+                        </div>` : '';
+                    
+                    DOMElements.statsContainer.innerHTML = sessionStatsHTML + topicStatsHTML;
                 },
 
                 showAnswerFeedback: (isCorrect, wordData) => {
@@ -543,7 +629,7 @@
          * -------------------
          */
         const GeminiModule = (() => {
-            const API_KEY = "AIzaSyCWgdZlzRHZFLL02TnfZHAEXlTvUIZE7OM"; // PASTE YOUR API KEY HERE
+            const API_KEY = ""; // PASTE YOUR API KEY HERE
             const BASE_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
             async function callApi(payload) {
@@ -607,9 +693,9 @@
                 translateExample: async (sentence) => {
                     const prompt = `Translate the following English sentence to Vietnamese: "${sentence}"`;
                      const schema = {
-                        type: "OBJECT",
-                        properties: { "vietnameseExample": { "type": "STRING" } },
-                        required: ["vietnameseExample"]
+                         type: "OBJECT",
+                         properties: { "vietnameseExample": { "type": "STRING" } },
+                         required: ["vietnameseExample"]
                     };
                     const payload = {
                         contents: [{ parts: [{ text: prompt }] }],
@@ -729,7 +815,7 @@
             };
         })();
 
-       /**
+        /**
          * -------------------
          * STORAGE MODULE
          * Handles saving and loading data from localStorage.
@@ -738,44 +824,75 @@
         const StorageModule = (() => {
             const FULL_LIST_KEY = 'vocabApp_fullList';
             const INCORRECT_WORDS_KEY = 'vocabApp_incorrectWords';
+            const MASTERED_WORDS_KEY = 'vocabApp_masteredWords';
+            const SESSION_PROGRESS_KEY = 'vocabApp_sessionProgress'; // New key for session data
 
             return {
                 saveFullList: (list) => {
                     try {
                         localStorage.setItem(FULL_LIST_KEY, JSON.stringify(list));
-                    } catch (e) {
-                        console.error("Error saving full list to localStorage:", e);
-                    }
+                    } catch (e) { console.error("Error saving to localStorage:", e); }
                 },
                 loadFullList: () => {
                     try {
                         const list = localStorage.getItem(FULL_LIST_KEY);
                         return list ? JSON.parse(list) : null;
-                    } catch (e) {
-                        console.error("Error loading full list from localStorage:", e);
-                        return null;
-                    }
+                    } catch (e) { console.error("Error loading from localStorage:", e); return null; }
                 },
                 saveIncorrectWords: (wordsSet) => {
                     try {
-                        const arr = Array.from(wordsSet);
-                        localStorage.setItem(INCORRECT_WORDS_KEY, JSON.stringify(arr));
-                    } catch (e) {
-                        console.error("Error saving incorrect words to localStorage:", e);
-                    }
+                        localStorage.setItem(INCORRECT_WORDS_KEY, JSON.stringify(Array.from(wordsSet)));
+                    } catch (e) { console.error("Error saving to localStorage:", e); }
                 },
                 loadIncorrectWords: () => {
                     try {
                         const arr = localStorage.getItem(INCORRECT_WORDS_KEY);
                         return arr ? new Set(JSON.parse(arr)) : new Set();
-                    } catch (e) {
-                        console.error("Error loading incorrect words from localStorage:", e);
-                        return new Set();
-                    }
+                    } catch (e) { console.error("Error loading from localStorage:", e); return new Set(); }
+                },
+                saveMasteredWords: (wordsSet) => {
+                    try {
+                        localStorage.setItem(MASTERED_WORDS_KEY, JSON.stringify(Array.from(wordsSet)));
+                    } catch (e) { console.error("Error saving to localStorage:", e); }
+                },
+                loadMasteredWords: () => {
+                    try {
+                        const arr = localStorage.getItem(MASTERED_WORDS_KEY);
+                        return arr ? new Set(JSON.parse(arr)) : new Set();
+                    } catch (e) { console.error("Error loading from localStorage:", e); return new Set(); }
+                },
+                saveSessionProgress: (progress) => { // New function to save session data
+                     try {
+                        const serializable = {};
+                        for (const key in progress) {
+                            serializable[key] = {
+                                learned: Array.from(progress[key].learned),
+                                incorrect: Array.from(progress[key].incorrect),
+                            };
+                        }
+                        localStorage.setItem(SESSION_PROGRESS_KEY, JSON.stringify(serializable));
+                    } catch (e) { console.error("Error saving to localStorage:", e); }
+                },
+                loadSessionProgress: () => { // New function to load session data
+                    try {
+                        const data = localStorage.getItem(SESSION_PROGRESS_KEY);
+                        if (!data) return {};
+                        const parsed = JSON.parse(data);
+                        const deserialized = {};
+                         for (const key in parsed) {
+                            deserialized[key] = {
+                                learned: new Set(parsed[key].learned),
+                                incorrect: new Set(parsed[key].incorrect),
+                            };
+                        }
+                        return deserialized;
+                    } catch (e) { console.error("Error loading from localStorage:", e); return {}; }
                 },
                 clearAllData: () => {
                     localStorage.removeItem(FULL_LIST_KEY);
                     localStorage.removeItem(INCORRECT_WORDS_KEY);
+                    localStorage.removeItem(MASTERED_WORDS_KEY);
+                    localStorage.removeItem(SESSION_PROGRESS_KEY); // Clear session data
                 }
             };
         })();
@@ -853,6 +970,11 @@
                         utterances.push(utterThis); // Keep a reference to prevent garbage collection
                         synth.speak(utterThis);
                     }
+                },
+                stop: () => {
+                    if (synth.speaking) {
+                        synth.cancel();
+                    }
                 }
             };
         })();
@@ -866,28 +988,30 @@
         const App = ((UI, Data, Speech, Gemini, Storage) => {
             const DOM = UI.getDOMElements();
             let state = {
-                sessionVocabularyList: [],
-                remainingWords: [],
                 currentWord: null,
-                learnedWords: new Set(),
-                incorrectWords: new Set(),
                 gameMode: 'vi-en',
                 currentTopicName: '',
                 currentPackIndex: -1,
                 isReviewSession: false,
                 readyForNext: false,
                 recognition: null,
-                PACK_SIZE: 10
+                PACK_SIZE: 10,
+                
+                // Persistent states
+                incorrectWords: new Set(),
+                masteredWords: new Set(),
+                allSessionProgress: {}, // Object to hold session data for all topics
+
+                // Temporary states for the current session
+                sessionVocabularyList: [],
+                remainingWords: [],
+                learnedInSession: new Set(),
+                incorrectInSession: new Set(),
             };
 
             const normalizeString = (str) => {
                 if (typeof str !== 'string') return '';
-                // Remove punctuation and convert to lowercase
-                return str
-                    .normalize('NFC')
-                    .trim()
-                    .toLowerCase()
-                    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+                return str.normalize('NFC').trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
             };
             
             const setupEventListeners = () => {
@@ -910,11 +1034,15 @@
                 });
                 
                 DOM.modeSelector.addEventListener('change', e => {
+                    Speech.stop();
                     state.gameMode = e.target.value;
                     resetGame();
                 });
                 
-                DOM.backToSelectionBtn.addEventListener('click', renderTopicView);
+                DOM.backToSelectionBtn.addEventListener('click', () => {
+                    Speech.stop();
+                    renderTopicView();
+                });
                 DOM.backToUploadBtn.addEventListener('click', () => {
                     Storage.clearAllData();
                     location.reload();
@@ -970,9 +1098,11 @@
                         try {
                             const vocabList = await Gemini.generateVocabList(topic.trim());
                             if (Data.loadData(vocabList, (msg) => UI.showModal({title: 'Lỗi', message: msg}))) {
-                                Storage.saveFullList(vocabList);
-                                Storage.saveIncorrectWords(new Set()); // Reset incorrect words
+                                Storage.clearAllData();
                                 state.incorrectWords.clear();
+                                state.masteredWords.clear();
+                                state.allSessionProgress = {};
+                                Storage.saveFullList(vocabList);
                                 renderTopicView();
                             } else {
                                 throw new Error("Generated data was not valid.");
@@ -997,10 +1127,10 @@
                     } else {
                         const result = await Gemini.generateAndTranslateExamples(wordData.Word);
                         if(result && result.ieltsExample && result.communicationExample){
-                            UI.displayExamples({ 
-                                ielts: { english: result.ieltsExample.english, vietnamese: result.ieltsExample.vietnamese },
-                                communication: { english: result.communicationExample.english, vietnamese: result.communicationExample.vietnamese }
-                            });
+                             UI.displayExamples({ 
+                                 ielts: { english: result.ieltsExample.english, vietnamese: result.ieltsExample.vietnamese },
+                                 communication: { english: result.communicationExample.english, vietnamese: result.communicationExample.vietnamese }
+                             });
                         } else {
                             throw new Error("Generation failed.");
                         }
@@ -1035,9 +1165,11 @@
                     const data = e.target.result;
                     const parsedData = Data.parseXLSX(data, (msg) => { DOM.uploadError.textContent = msg; });
                     if(Data.loadData(parsedData, (msg) => { DOM.uploadError.textContent = msg; })) {
-                         Storage.saveFullList(parsedData);
-                         Storage.saveIncorrectWords(new Set()); // Reset incorrect words
+                         Storage.clearAllData();
                          state.incorrectWords.clear();
+                         state.masteredWords.clear();
+                         state.allSessionProgress = {};
+                         Storage.saveFullList(parsedData);
                          renderTopicView();
                     } else {
                          DOM.fileNameDisplay.textContent = '';
@@ -1045,6 +1177,35 @@
                 };
                 reader.onerror = () => { DOM.uploadError.textContent = 'Đã có lỗi xảy ra khi đọc file.'; };
                 reader.readAsArrayBuffer(file);
+            };
+
+            const updateAndRenderStats = () => {
+                const sessionTotal = state.sessionVocabularyList.length;
+                const sessionCorrect = state.learnedInSession.size;
+                const sessionIncorrect = state.incorrectInSession.size;
+                const sessionRemaining = sessionTotal - sessionCorrect - sessionIncorrect;
+                
+                let topicMastered = 0;
+                let topicTotal = 0;
+                let showTopicStats = false;
+                
+                const allTopics = Data.getTopics();
+                if (state.currentTopicName && allTopics[state.currentTopicName] && !state.isReviewSession && state.currentTopicName !== 'Tất cả') {
+                    const topicWords = allTopics[state.currentTopicName];
+                    topicTotal = topicWords.length;
+                    topicMastered = topicWords.filter(w => state.masteredWords.has(w.Word)).length;
+                    showTopicStats = true;
+                }
+
+                UI.renderStats({
+                    sessionCorrect,
+                    sessionIncorrect,
+                    sessionRemaining,
+                    sessionTotal,
+                    topicMastered,
+                    topicTotal,
+                    showTopicStats
+                });
             };
             
             const renderTopicView = () => {
@@ -1054,9 +1215,15 @@
                 
                 if (state.incorrectWords.size > 0) {
                     const reviewBtn = document.createElement('button');
-                    reviewBtn.className = 'w-full text-left bg-orange-500 text-white font-semibold p-4 rounded-lg hover:bg-orange-600 topic-button';
-                    reviewBtn.innerHTML = `Ôn tập lại từ sai <span class="font-normal">(${state.incorrectWords.size} từ)</span>`;
+                    reviewBtn.className = 'w-full text-left bg-orange-500 text-white font-semibold p-4 rounded-lg hover:bg-orange-600 topic-button flex flex-col';
+                    reviewBtn.innerHTML = `
+                        <div>
+                            <span>Ôn tập lại từ sai</span>
+                            <span class="font-normal text-sm">(${state.incorrectWords.size} từ)</span>
+                        </div>
+                    `;
                     reviewBtn.onclick = () => {
+                        Speech.stop();
                         const reviewList = Data.getFullList().filter(word => state.incorrectWords.has(word.Word));
                         state.isReviewSession = true;
                         startGame(reviewList, 'Ôn tập');
@@ -1068,24 +1235,69 @@
                 
                 if (Object.keys(topics).length > 1) {
                     const allBtn = document.createElement('button');
-                    allBtn.className = 'w-full text-left bg-indigo-500 text-white font-semibold p-4 rounded-lg hover:bg-indigo-600 topic-button';
-                    allBtn.textContent = `Học tất cả (${Data.getFullList().length} từ)`;
-                    allBtn.onclick = () => startGame(Data.getFullList(), 'Tất cả');
+                    const allWords = Data.getFullList();
+                    const allMastered = allWords.filter(w => state.masteredWords.has(w.Word)).length;
+                    const allTotal = allWords.length;
+                    const allPercentage = allTotal > 0 ? (allMastered / allTotal) * 100 : 0;
+                    const isAllCompleted = allMastered === allTotal && allTotal > 0;
+
+                    allBtn.className = `w-full text-left font-semibold p-4 rounded-lg topic-button flex flex-col ${isAllCompleted ? 'bg-teal-500 text-white hover:bg-teal-600' : 'bg-indigo-500 text-white hover:bg-indigo-600'}`;
+                    allBtn.innerHTML = `
+                        <div>
+                            <span>Học tất cả</span>
+                            <span class="font-normal text-sm">(${allMastered}/${allTotal} từ)</span>
+                        </div>
+                        <div class="w-full ${isAllCompleted ? 'bg-teal-400' : 'bg-indigo-400'} rounded-full h-1.5 mt-2">
+                            <div class="bg-white h-1.5 rounded-full" style="width: ${allPercentage}%"></div>
+                        </div>
+                    `;
+                    allBtn.onclick = () => {
+                        Speech.stop();
+                        startGame(Data.getFullList(), 'Tất cả');
+                    };
                     DOM.specialSelectionListContainer.appendChild(allBtn);
                 }
                 
                 orderedTopics.forEach(topicName => {
                     const btn = document.createElement('button');
-                    btn.className = 'topic-button bg-white border border-slate-200 p-2 rounded-lg flex flex-col justify-center items-center text-center h-28';
+                    const topicWords = topics[topicName];
+                    const totalCount = topicWords.length;
+                    const masteredCount = topicWords.filter(w => state.masteredWords.has(w.Word)).length;
+                    const hasStarted = topicWords.some(w => state.masteredWords.has(w.Word) || state.incorrectWords.has(w.Word));
+
+                    const percentage = totalCount > 0 ? (masteredCount / totalCount) * 100 : 0;
+                    const isTopicCompleted = masteredCount === totalCount && totalCount > 0;
+                    const isInProgress = hasStarted && !isTopicCompleted;
+
+                    let btnClasses = 'bg-white border-slate-200';
+                    let textClasses = 'text-slate-800';
+                    let subTextClasses = 'text-slate-500';
+                    let progressBg = 'bg-slate-200';
+                    
+                    if (isTopicCompleted) {
+                        btnClasses = 'bg-teal-50 border-teal-200';
+                        textClasses = 'text-teal-800';
+                        subTextClasses = 'text-teal-600';
+                        progressBg = 'bg-teal-200';
+                    } else if (isInProgress) {
+                        btnClasses = 'bg-yellow-50 border-yellow-300';
+                        textClasses = 'text-yellow-800';
+                        subTextClasses = 'text-yellow-600';
+                        progressBg = 'bg-yellow-200';
+                    }
+                    
+                    btn.className = `topic-button border p-3 rounded-lg flex flex-col justify-between text-center h-28 ${btnClasses}`;
                     btn.innerHTML = `
-                        <div class="mb-2 text-indigo-500">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                        <div class="flex-grow flex flex-col justify-center items-center w-full">
+                           <span class="font-semibold text-sm w-full break-words px-1 ${textClasses}">${topicName}</span>
+                           <span class="text-xs mt-1 ${subTextClasses}">(${masteredCount}/${totalCount} từ)</span>
                         </div>
-                        <span class="font-semibold text-slate-800 text-sm w-full break-words px-1">${topicName}</span>
-                        <span class="text-xs text-slate-500 mt-1">(${topics[topicName].length} từ)</span>
+                        <div class="w-full rounded-full h-1.5 mt-2 ${progressBg}">
+                           <div class="bg-teal-500 h-1.5 rounded-full" style="width: ${percentage}%"></div>
+                        </div>
                     `;
                     btn.onclick = () => {
-                        const topicWords = topics[topicName];
+                        Speech.stop();
                         if (topicWords.length > state.PACK_SIZE) {
                             const firstPack = topicWords.slice(0, state.PACK_SIZE);
                             startGame(firstPack, topicName, 0);
@@ -1100,40 +1312,63 @@
             
             const setupPackSelector = (topicName, activePackIndex) => {
                 const topicWords = Data.getTopics()[topicName];
-                DOM.packSelector.innerHTML = '';
-                
+                const clickHandler = (newIndex) => {
+                    Speech.stop();
+                    const start = newIndex * state.PACK_SIZE;
+                    const newPackWords = topicWords.slice(start, start + state.PACK_SIZE);
+                    startGame(newPackWords, state.currentTopicName, newIndex);
+                };
+
                 if (!topicWords || topicWords.length <= state.PACK_SIZE) {
-                    DOM.packSelectorContainer.classList.add('hidden');
+                    UI.renderPackButtons([], activePackIndex, clickHandler);
                     return;
                 }
-
-                DOM.packSelectorContainer.classList.remove('hidden');
-
+                
                 const numPacks = Math.ceil(topicWords.length / state.PACK_SIZE);
+                const packsData = [];
                 for (let i = 0; i < numPacks; i++) {
-                    const option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = `Gói ${i + 1}`;
-                    if (i === activePackIndex) option.selected = true;
-                    DOM.packSelector.appendChild(option);
+                    const packWords = topicWords.slice(i * state.PACK_SIZE, (i * state.PACK_SIZE) + state.PACK_SIZE);
+                    const isCompleted = packWords.every(w => state.masteredWords.has(w.Word));
+                    const sessionKey = `${topicName}_pack${i}`;
+                    const session = state.allSessionProgress[sessionKey];
+                    const isInProgress = session && (session.learned.size > 0 || session.incorrect.size > 0) && !isCompleted;
+                    packsData.push({ index: i, isCompleted, isInProgress });
                 }
-                 DOM.packSelector.addEventListener('change', (e) => {
-                    const newPackIndex = parseInt(e.target.value);
-                    const topicWords = Data.getTopics()[state.currentTopicName];
-                    if (topicWords) {
-                        const start = newPackIndex * state.PACK_SIZE;
-                        const newPackWords = topicWords.slice(start, start + state.PACK_SIZE);
-                        startGame(newPackWords, state.currentTopicName, newPackIndex);
-                    }
-                }, { once: true });
+
+                UI.renderPackButtons(packsData, activePackIndex, clickHandler);
             };
 
             const startGame = (wordList, topicName = '', packIndex = -1) => {
+                const sessionKey = packIndex > -1 ? `${topicName}_pack${packIndex}` : topicName;
+                
                 state.isReviewSession = (topicName === 'Ôn tập');
                 state.currentTopicName = topicName;
                 state.currentPackIndex = packIndex;
                 state.sessionVocabularyList = [...wordList];
                 
+                if(state.isReviewSession) {
+                    state.learnedInSession = new Set();
+                    state.incorrectInSession = new Set();
+                } else {
+                    const savedSession = state.allSessionProgress[sessionKey];
+                    if (savedSession) {
+                        const allWordsInListMastered = wordList.every(w => state.masteredWords.has(w.Word));
+                        if(allWordsInListMastered){
+                            savedSession.learned.clear();
+                            savedSession.incorrect.clear();
+                        }
+                        state.learnedInSession = savedSession.learned;
+                        state.incorrectInSession = savedSession.incorrect;
+                    } else {
+                        state.learnedInSession = new Set();
+                        state.incorrectInSession = new Set();
+                        state.allSessionProgress[sessionKey] = {
+                            learned: state.learnedInSession,
+                            incorrect: state.incorrectInSession,
+                        };
+                    }
+                }
+
                 DOM.appTitle.textContent = `Chủ đề: ${state.currentTopicName}`;
                 
                 if (packIndex > -1) {
@@ -1147,15 +1382,20 @@
             };
             
             const resetGame = () => {
-                state.learnedWords.clear();
-                state.remainingWords = [...state.sessionVocabularyList];
-                UI.updateProgress(state.learnedWords.size, state.sessionVocabularyList.length);
+                state.remainingWords = state.sessionVocabularyList.filter(word => 
+                    !state.learnedInSession.has(word.Word) && !state.incorrectInSession.has(word.Word)
+                );
+                
                 getNewWord();
             };
 
             const getNewWord = () => {
+                Speech.stop();
                 state.readyForNext = false;
+                
                 if (state.remainingWords.length === 0) {
+                    if(state.currentPackIndex > -1) setupPackSelector(state.currentTopicName, state.currentPackIndex);
+                    
                     const topicWords = Data.getTopics()[state.currentTopicName];
                     const nextPackIndex = state.currentPackIndex + 1;
                     const nextPackStart = nextPackIndex * state.PACK_SIZE;
@@ -1171,10 +1411,12 @@
                     }
                     return;
                 }
+
                 const randomIndex = Math.floor(Math.random() * state.remainingWords.length);
                 state.currentWord = state.remainingWords[randomIndex];
                 UI.updateCard(state.currentWord, state.gameMode, state.currentPackIndex, state.currentTopicName);
                 UI.resetUIState();
+                updateAndRenderStats();
             };
             
             const checkAnswer = () => {
@@ -1204,73 +1446,102 @@
                 DOM.checkBtn.disabled = true;
                 state.readyForNext = true;
 
-                if (!state.learnedWords.has(state.currentWord.Word)) {
-                    state.learnedWords.add(state.currentWord.Word);
-                }
+                // Update session state
+                state.learnedInSession.add(state.currentWord.Word);
+                state.incorrectInSession.delete(state.currentWord.Word);
+
                 state.remainingWords = state.remainingWords.filter(word => word.Word !== state.currentWord.Word);
                 
+                // Update global mastery state
+                state.masteredWords.add(state.currentWord.Word);
+                state.incorrectWords.delete(state.currentWord.Word);
+
+                // --- Synchronization Logic ---
                 if (state.isReviewSession) {
-                    state.incorrectWords.delete(state.currentWord.Word);
+                    const answeredWord = state.currentWord.Word;
+                    // Iterate over all tracked sessions to synchronize progress
+                    for (const sessionKey in state.allSessionProgress) {
+                        const session = state.allSessionProgress[sessionKey];
+                        // If the word was incorrect in any other session, mark it as learned there too.
+                        if (session.incorrect.has(answeredWord)) {
+                            session.incorrect.delete(answeredWord);
+                            session.learned.add(answeredWord);
+                        }
+                    }
                 }
+
+                // Save all progress
+                Storage.saveMasteredWords(state.masteredWords);
                 Storage.saveIncorrectWords(state.incorrectWords);
+                Storage.saveSessionProgress(state.allSessionProgress);
                 
                 UI.showAnswerFeedback(true, state.currentWord);
                 fetchAndShowExamples(state.currentWord);
-                UI.updateProgress(state.learnedWords.size, state.sessionVocabularyList.length);
+                updateAndRenderStats();
             };
 
             const handleIncorrectAnswer = () => {
                 DOM.inputContainer.classList.add('feedback-incorrect');
                 DOM.feedbackIcon.innerHTML = `<svg class="w-6 h-6 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>`;
+                
+                // Update session state
+                state.incorrectInSession.add(state.currentWord.Word);
+                
+                // Update global mastery state
+                state.masteredWords.delete(state.currentWord.Word);
                 state.incorrectWords.add(state.currentWord.Word);
+                Storage.saveMasteredWords(state.masteredWords);
                 Storage.saveIncorrectWords(state.incorrectWords);
+                Storage.saveSessionProgress(state.allSessionProgress);
+
                 DOM.checkBtn.disabled = true;
                 DOM.answerInput.disabled = true;
                 state.readyForNext = true;
                 
                 UI.showAnswerFeedback(false, state.currentWord);
                 fetchAndShowExamples(state.currentWord);
+                updateAndRenderStats();
             };
 
             const initSpeechRecognition = () => {
                  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                    if (SpeechRecognition) {
-                        state.recognition = new SpeechRecognition();
-                        state.recognition.continuous = false;
-                        state.recognition.lang = 'en-US';
-                        state.recognition.interimResults = false;
-                        state.recognition.maxAlternatives = 1;
+                   if (SpeechRecognition) {
+                       state.recognition = new SpeechRecognition();
+                       state.recognition.continuous = false;
+                       state.recognition.lang = 'en-US';
+                       state.recognition.interimResults = false;
+                       state.recognition.maxAlternatives = 1;
 
-                        state.recognition.onresult = (event) => {
-                            const speechResult = event.results[0][0].transcript;
-                            DOM.answerInput.value = speechResult;
-                            if (state.gameMode === 'speak') checkAnswer();
-                        };
+                       state.recognition.onresult = (event) => {
+                           const speechResult = event.results[0][0].transcript;
+                           DOM.answerInput.value = speechResult;
+                           if (state.gameMode === 'speak') checkAnswer();
+                       };
 
-                        state.recognition.onend = () => DOM.speakBtn.classList.remove('mic-listening', 'text-red-500');
+                       state.recognition.onend = () => DOM.speakBtn.classList.remove('mic-listening', 'text-red-500');
 
-                        state.recognition.onerror = (event) => {
-                            console.error("Speech recognition error", event.error);
-                            let title = "Lỗi Nhận dạng Giọng nói";
-                            let message = `Đã xảy ra một lỗi: ${event.error}. Vui lòng thử lại.`;
+                       state.recognition.onerror = (event) => {
+                           console.error("Speech recognition error", event.error);
+                           let title = "Lỗi Nhận dạng Giọng nói";
+                           let message = `Đã xảy ra một lỗi: ${event.error}. Vui lòng thử lại.`;
 
-                            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                                title = "Lỗi Quyền Truy Cập Micro";
-                                message = "Để tính năng nhận dạng giọng nói hoạt động, trình duyệt cần được TẢI LẠI TRANG sau khi bạn cấp quyền. Vui lòng nhấn nút Tải lại (Reload) trên trình duyệt hoặc phím F5, sau đó chọn lại chế độ Luyện nói.";
-                            } else if (event.error === 'no-speech') {
-                                title = "Không nhận dạng được";
-                                message = "Không phát hiện được giọng nói. Vui lòng đảm bảo micro hoạt động và bạn đang nói rõ ràng.";
-                            } else if (event.error === 'audio-capture') {
-                                title = "Lỗi Micro";
-                                message = "Không thể thu âm thanh. Vui lòng kiểm tra lại micro của bạn có được kết nối và hoạt động đúng cách không.";
-                            }
-                            
-                            UI.showModal({title: title, message: message});
-                            DOM.speakBtn.classList.remove('mic-listening', 'text-red-500');
-                        };
-                        
-                        DOM.speakModeContainer.classList.remove('hidden');
-                    }
+                           if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                               title = "Lỗi Quyền Truy Cập Micro";
+                               message = "Để tính năng nhận dạng giọng nói hoạt động, trình duyệt cần được TẢI LẠI TRANG sau khi bạn cấp quyền. Vui lòng nhấn nút Tải lại (Reload) trên trình duyệt hoặc phím F5, sau đó chọn lại chế độ Luyện nói.";
+                           } else if (event.error === 'no-speech') {
+                               title = "Không nhận dạng được";
+                               message = "Không phát hiện được giọng nói. Vui lòng đảm bảo micro hoạt động và bạn đang nói rõ ràng.";
+                           } else if (event.error === 'audio-capture') {
+                               title = "Lỗi Micro";
+                               message = "Không thể thu âm thanh. Vui lòng kiểm tra lại micro của bạn có được kết nối và hoạt động đúng cách không.";
+                           }
+                           
+                           UI.showModal({title: title, message: message});
+                           DOM.speakBtn.classList.remove('mic-listening', 'text-red-500');
+                       };
+                       
+                       DOM.speakModeContainer.classList.remove('hidden');
+                   }
             }
 
             return {
@@ -1279,10 +1550,11 @@
                          setupEventListeners();
                          initSpeechRecognition();
                          const savedList = Storage.loadFullList();
-                         const savedIncorrectWords = Storage.loadIncorrectWords();
                          if(savedList) {
                             Data.loadData(savedList, (err) => console.error(err));
-                            state.incorrectWords = savedIncorrectWords;
+                            state.incorrectWords = Storage.loadIncorrectWords();
+                            state.masteredWords = Storage.loadMasteredWords();
+                            state.allSessionProgress = Storage.loadSessionProgress();
                             renderTopicView();
                          } else {
                             UI.showScreen('upload-section');
