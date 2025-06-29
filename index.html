@@ -1035,14 +1035,13 @@
                 incorrectInSession: new Set(),
             };
             
-            // Removes punctuation and extraneous whitespace for strict comparison.
             const normalizeStrict = (str) => {
                 if (typeof str !== 'string') return '';
                 return str.normalize('NFC').trim().toLowerCase()
                     .replace(/[.,\/#!$%\^&\*;:{}=_`~()?'"]/g, "")
-                    .replace(/\s+/g, ' '); // Collapse multiple spaces to one
+                    .replace(/\s+/g, ' '); 
             };
-
+            
             const setupEventListeners = () => {
                 DOM.fileInput.addEventListener('change', handleFileSelect);
                 DOM.downloadSampleBtn.addEventListener('click', downloadSampleFile);
@@ -1211,7 +1210,7 @@
                 const sessionTotal = state.sessionVocabularyList.length;
                 const sessionCorrect = state.learnedInSession.size;
                 const sessionIncorrect = state.incorrectInSession.size;
-                const sessionRemaining = sessionTotal - sessionCorrect - sessionIncorrect;
+                const sessionRemaining = sessionTotal - (sessionCorrect + sessionIncorrect);
                 
                 let topicMastered = 0;
                 let topicTotal = 0;
@@ -1420,24 +1419,33 @@
                 state.remainingWords = state.sessionVocabularyList.filter(word => 
                     !state.learnedInSession.has(word.Word) && !state.incorrectInSession.has(word.Word)
                 );
-                
-                if (state.remainingWords.length === 0) {
-                    if(state.currentPackIndex > -1) setupPackSelector(state.currentTopicName, state.currentPackIndex);
-                    
-                    const topicWords = Data.getTopics()[state.currentTopicName];
-                    const nextPackIndex = state.currentPackIndex + 1;
-                    const nextPackStart = nextPackIndex * state.PACK_SIZE;
 
-                    if (!state.isReviewSession && state.currentPackIndex > -1 && topicWords && nextPackStart < topicWords.length) {
-                        UI.showCompletionScreen("Tuyệt vời!", `Tự động chuyển sang gói ${nextPackIndex + 1}...`);
-                        const nextPackWords = topicWords.slice(nextPackStart, nextPackStart + state.PACK_SIZE);
-                        setTimeout(() => startGame(nextPackWords, state.currentTopicName, nextPackIndex), 2500);
+                if (state.remainingWords.length === 0) {
+                    // Check if there are any words in the incorrect list for this session
+                    const incorrectList = state.sessionVocabularyList.filter(word => state.incorrectInSession.has(word.Word));
+                    if (incorrectList.length > 0) {
+                        // If so, start a review round with only the incorrect words
+                        state.remainingWords = incorrectList;
+                        state.incorrectInSession.clear(); // Clear the set for the new round
                     } else {
-                        const message = state.isReviewSession ? 'Bạn đã ôn tập xong.' : `Bạn đã hoàn thành chủ đề "${state.currentTopicName}".`
-                        UI.showCompletionScreen("Hoàn thành!", message);
-                        setTimeout(renderTopicView, 3000);
+                        // If not, the session is truly complete
+                        if(state.currentPackIndex > -1) setupPackSelector(state.currentTopicName, state.currentPackIndex);
+                        
+                        const topicWords = Data.getTopics()[state.currentTopicName];
+                        const nextPackIndex = state.currentPackIndex + 1;
+                        const nextPackStart = nextPackIndex * state.PACK_SIZE;
+
+                        if (!state.isReviewSession && state.currentPackIndex > -1 && topicWords && nextPackStart < topicWords.length) {
+                            UI.showCompletionScreen("Tuyệt vời!", `Tự động chuyển sang gói ${nextPackIndex + 1}...`);
+                            const nextPackWords = topicWords.slice(nextPackStart, nextPackStart + state.PACK_SIZE);
+                            setTimeout(() => startGame(nextPackWords, state.currentTopicName, nextPackIndex), 2500);
+                        } else {
+                            const message = state.isReviewSession ? 'Bạn đã ôn tập xong.' : `Bạn đã hoàn thành chủ đề "${state.currentTopicName}".`
+                            UI.showCompletionScreen("Hoàn thành!", message);
+                            setTimeout(renderTopicView, 3000);
+                        }
+                        return;
                     }
-                    return;
                 }
 
                 const randomIndex = Math.floor(Math.random() * state.remainingWords.length);
@@ -1466,19 +1474,22 @@
                 for (const answer of possibleAnswers) {
                     if (!answer) continue;
 
-                    // Generate a set of valid variations for the correct answer
-                    const validVariations = new Set();
                     const strictAnswer = normalizeStrict(answer);
-                    validVariations.add(strictAnswer);
-
-                    if (answer.includes('-')) {
-                        validVariations.add(normalizeStrict(answer.replace(/-/g, ''))); // e.g., "coworking"
-                        validVariations.add(normalizeStrict(answer.replace(/-/g, ' '))); // e.g., "co working"
-                    }
-
-                    if (validVariations.has(normalizedUserAnswer)) {
+                    // Strict comparison first
+                    if (normalizedUserAnswer === strictAnswer) {
                         isCorrect = true;
                         break;
+                    }
+                    
+                    // If strict fails AND the correct answer has a hyphen, check flexible variations
+                    if (answer.includes('-')) {
+                        const flexibleWithSpace = normalizeStrict(answer.replace(/-/g, ' '));
+                        const flexibleWithoutSpace = normalizeStrict(answer.replace(/-/g, ''));
+                        
+                        if (normalizedUserAnswer === flexibleWithSpace || normalizedUserAnswer === flexibleWithoutSpace) {
+                            isCorrect = true;
+                            break;
+                        }
                     }
                 }
                 
