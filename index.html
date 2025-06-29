@@ -1034,12 +1034,15 @@
                 learnedInSession: new Set(),
                 incorrectInSession: new Set(),
             };
-
-            const normalizeString = (str) => {
-                if (typeof str !== 'string') return '';
-                return str.normalize('NFC').trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-            };
             
+            // Removes punctuation and extraneous whitespace for strict comparison.
+            const normalizeStrict = (str) => {
+                if (typeof str !== 'string') return '';
+                return str.normalize('NFC').trim().toLowerCase()
+                    .replace(/[.,\/#!$%\^&\*;:{}=_`~()?'"]/g, "")
+                    .replace(/\s+/g, ' '); // Collapse multiple spaces to one
+            };
+
             const setupEventListeners = () => {
                 DOM.fileInput.addEventListener('change', handleFileSelect);
                 DOM.downloadSampleBtn.addEventListener('click', downloadSampleFile);
@@ -1049,13 +1052,20 @@
                     btn.addEventListener('click', () => handleModeSelection(btn.dataset.mode));
                 });
                 DOM.backToUploadBtnFromMode.addEventListener('click', () => {
+                     Speech.stop();
                      Storage.clearAllData();
                      location.reload();
                 });
                 
                 // Back Buttons
-                DOM.backToModeSelectionBtn.addEventListener('click', () => UI.showScreen('mode-selection-section'));
-                DOM.backToTopicSelectionBtn.addEventListener('click', renderTopicView);
+                DOM.backToModeSelectionBtn.addEventListener('click', () => {
+                    Speech.stop();
+                    UI.showScreen('mode-selection-section');
+                });
+                DOM.backToTopicSelectionBtn.addEventListener('click', () => {
+                    Speech.stop();
+                    renderTopicView();
+                });
 
                 // In-App Buttons
                 DOM.checkBtn.addEventListener('click', checkAnswer);
@@ -1110,6 +1120,7 @@
             };
 
             const handleModeSelection = (mode) => {
+                Speech.stop();
                 state.gameMode = mode;
                 
                 // Load progress specific to the selected mode
@@ -1160,7 +1171,7 @@
                 const sampleData = [
                   { Word: 'diligent', Meaning: 'siêng năng, cần cù', Topic: 'Adjectives', IPA: '/ˈdɪl.ə.dʒənt/', Example: 'His diligent efforts were rewarded with a promotion.' },
                   { Word: 'ubiquitous', Meaning: 'phổ biến, ở đâu cũng có', Topic: 'Adjectives', IPA: '/juːˈbɪk.wə.t̬əs/', Example: 'The company\'s logo has become ubiquitous all over the world.' },
-                  { Word: 'ephemeral', Meaning: 'phù du, chóng tàn', Topic: 'Adjectives', IPA: '/əˈfem.ər.əl/', Example: 'Fame in the world of pop music is largely ephemeral.' },
+                  { Word: 'co-working space', Meaning: 'không gian làm việc chung', Topic: 'Business', IPA: '/ˌkoʊˈwɜːrkɪŋ speɪs/', Example: 'Many freelancers prefer the collaborative environment of a co-working space.' },
                   { Word: 'mitigate', Meaning: 'giảm nhẹ, làm dịu bớt', Topic: 'Verbs', IPA: '/ˈmɪt̬.ə.ɡeɪt/', Example: 'They are trying to mitigate the effects of the recession.' },
                   { Word: 'eloquent', Meaning: 'hùng hồn, có tài hùng biện', Topic: 'Adjectives', IPA: '/ˈel.ə.kwənt/', Example: 'She gave an eloquent speech at the conference.'}
                 ];
@@ -1358,6 +1369,7 @@
             };
 
             const startGame = (wordList, topicName = '', packIndex = -1) => {
+                Speech.stop();
                 const sessionKey = packIndex > -1 ? `${topicName}_pack${packIndex}` : topicName;
                 
                 state.isReviewSession = (topicName === 'Ôn tập');
@@ -1437,18 +1449,37 @@
             
             const checkAnswer = () => {
                 if (!state.currentWord || DOM.checkBtn.disabled) return;
-                const userAnswer = normalizeString(DOM.answerInput.value);
-                if (userAnswer === '') return;
+                
+                const userAnswerRaw = DOM.answerInput.value;
+                if (userAnswerRaw.trim() === '') return;
+
                 let isCorrect = false;
 
-                const getCorrectAnswers = (field) => field.split(';').flatMap(part => part.split(',')).map(s => normalizeString(s));
+                const correctAnswerField = (state.gameMode === 'en-vi') 
+                    ? state.currentWord.Meaning 
+                    : state.currentWord.Word;
+
+                const possibleAnswers = correctAnswerField.split(';').flatMap(part => part.split(',')).map(s => s.trim());
                 
-                if (state.gameMode === 'en-vi') {
-                    const correctAnswers = getCorrectAnswers(state.currentWord.Meaning);
-                    isCorrect = correctAnswers.includes(userAnswer);
-                } else { // Works for 'vi-en' and 'speak'
-                    const correctAnswers = getCorrectAnswers(state.currentWord.Word);
-                    isCorrect = correctAnswers.includes(userAnswer);
+                const normalizedUserAnswer = normalizeStrict(userAnswerRaw);
+
+                for (const answer of possibleAnswers) {
+                    if (!answer) continue;
+
+                    // Generate a set of valid variations for the correct answer
+                    const validVariations = new Set();
+                    const strictAnswer = normalizeStrict(answer);
+                    validVariations.add(strictAnswer);
+
+                    if (answer.includes('-')) {
+                        validVariations.add(normalizeStrict(answer.replace(/-/g, ''))); // e.g., "coworking"
+                        validVariations.add(normalizeStrict(answer.replace(/-/g, ' '))); // e.g., "co working"
+                    }
+
+                    if (validVariations.has(normalizedUserAnswer)) {
+                        isCorrect = true;
+                        break;
+                    }
                 }
                 
                 if (isCorrect) handleCorrectAnswer();
