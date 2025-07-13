@@ -90,6 +90,9 @@
         #pack-buttons-container::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        .progress-bar > div {
+            transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
     </style>
 </head>
 <body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
@@ -126,7 +129,7 @@
                     <ul class="list-disc list-inside space-y-2 text-sm">
                         <li><code class="bg-slate-100 text-slate-800 font-mono py-0.5 px-1.5 rounded-md">Word</code> (<strong>Bắt buộc</strong>): Từ vựng tiếng Anh.</li>
                         <li><code class="bg-slate-100 text-slate-800 font-mono py-0.5 px-1.5 rounded-md">Meaning</code> (<strong>Bắt buộc</strong>): Nghĩa tiếng Việt của từ.</li>
-                        <li><code class="bg-slate-100 text-slate-800 font-mono py-0.5 px-1.5 rounded-md">Topic</code> (Tùy chọn): Chủ đề của từ (ví dụ: "Technology", "Business").</li>
+                        <li><code class="bg-slate-100 text-slate-800 font-mono py-0.5 px-1.5 rounded-md">Topic</code> (Tùy chọn): Chủ đề của từ, ví dụ: <code class="bg-slate-100 text-slate-800 font-mono py-0.5 px-1.5 rounded-md">Adjectives (Tính từ)</code>.</li>
                         <li><code class="bg-slate-100 text-slate-800 font-mono py-0.5 px-1.5 rounded-md">IPA</code> (Tùy chọn): Phiên âm quốc tế của từ.</li>
                         <li><code class="bg-slate-100 text-slate-800 font-mono py-0.5 px-1.5 rounded-md">Example</code> (Tùy chọn): Câu ví dụ bằng tiếng Anh.</li>
                     </ul>
@@ -534,9 +537,7 @@
                 },
 
                 renderStats: (stats) => {
-                    const sessionPercentage = stats.sessionTotal > 0 ? ((stats.sessionCorrect + stats.sessionIncorrect) / stats.sessionTotal) * 100 : 0;
                     const topicPercentage = stats.topicTotal > 0 ? (stats.topicMastered / stats.topicTotal) * 100 : 0;
-
                     const sessionStatsHTML = `
                         <div>
                             <h3 class="text-sm font-semibold text-slate-600 mb-3 text-center">Tiến Độ Phiên Học</h3>
@@ -564,19 +565,21 @@
                                 </div>
                             </div>
                             <div class="w-full bg-slate-200 rounded-full h-2">
-                                <div class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: ${sessionPercentage}%"></div>
+                                <div class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: ${stats.sessionPercentage}%"></div>
                             </div>
                         </div>`;
 
                     const topicStatsHTML = stats.showTopicStats ? `
                         <div class="border-t border-slate-200 pt-5">
-                            <h3 class="text-sm font-semibold text-slate-600 mb-2 text-center">Tiến Độ Toàn Chủ Đề</h3>
-                            <div class="flex justify-between items-center mb-1 text-sm">
-                                <span class="text-slate-600">Đã thành thạo</span>
-                                <span class="font-medium text-slate-700">${stats.topicMastered} / ${stats.topicTotal}</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-2">
-                                <div class="bg-teal-500 h-2 rounded-full transition-all duration-300" style="width: ${topicPercentage}%"></div>
+                            <h3 class="text-sm font-semibold text-slate-600 mb-3 text-center">Tiến Độ Toàn Chủ Đề</h3>
+                             <div class="flex justify-center items-center">
+                                <div class="relative w-24 h-24 rounded-full flex items-center justify-center" style="background: radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(#14b8a6 ${topicPercentage}%, #e2e8f0 0)">
+                                     <span class="text-xl font-bold text-slate-700">${Math.round(topicPercentage)}%</span>
+                                </div>
+                                <div class="ml-6 text-left">
+                                    <p class="text-sm text-slate-600">Đã thành thạo:</p>
+                                    <p class="text-2xl font-bold text-slate-800">${stats.topicMastered} <span class="text-lg font-medium text-slate-500">/ ${stats.topicTotal} từ</span></p>
+                                </div>
                             </div>
                         </div>` : '';
                     
@@ -1210,7 +1213,7 @@
                 DOM.mainSpeakerBtn.addEventListener('click', () => { if (state.currentWord) Speech.speak(state.currentWord.Word, 'en-US'); });
                 DOM.answerSpeakerBtn.addEventListener('click', () => { if (state.currentWord) Speech.speak(state.currentWord.Word, 'en-US'); });
                 DOM.ieltsExampleSpeakerBtn.addEventListener('click', () => Speech.speak(DOM.ieltsExampleSentence.textContent.replace('🇬🇧 ', ''), 'en-US'));
-                DOM.commExampleSpeakerBtn.addEventListener('click', () => Speech.speak(DOM.commExampleSentence.textContent.replace('🇬🇧 ', ''), 'en-US'));
+                DOM.commExampleSpeakerBtn.addEventListener('click', () => Speech.speak(DOM.commExampleSentence.textContent.replace('�🇧 ', ''), 'en-US'));
                 DOM.singleExampleSpeakerBtn.addEventListener('click', () => Speech.speak(DOM.exampleSentence.textContent.replace('🇬🇧 ', ''), 'en-US'));
 
                 DOM.speakBtn.addEventListener('click', () => {
@@ -1311,11 +1314,11 @@
             // --- Core App Logic ---
             const downloadSampleFile = () => {
                 const sampleData = [
-                  { Word: 'diligent', Meaning: 'siêng năng, cần cù', Topic: 'Adjectives', IPA: '/ˈdɪl.ə.dʒənt/', Example: 'His diligent efforts were rewarded with a promotion.' },
-                  { Word: 'ubiquitous', Meaning: 'phổ biến, ở đâu cũng có', Topic: 'Adjectives', IPA: '/juːˈbɪk.wə.t̬əs/', Example: 'The company\'s logo has become ubiquitous all over the world.' },
-                  { Word: 'co-working space', Meaning: 'không gian làm việc chung', Topic: 'Business', IPA: '/ˌkoʊˈwɜːrkɪŋ speɪs/', Example: 'Many freelancers prefer the collaborative environment of a co-working space.' },
-                  { Word: 'mitigate', Meaning: 'giảm nhẹ, làm dịu bớt', Topic: 'Verbs', IPA: '/ˈmɪt̬.ə.ɡeɪt/', Example: 'They are trying to mitigate the effects of the recession.' },
-                  { Word: 'eloquent', Meaning: 'hùng hồn, có tài hùng biện', Topic: 'Adjectives', IPA: '/ˈel.ə.kwənt/', Example: 'She gave an eloquent speech at the conference.'}
+                  { Word: 'diligent', Meaning: 'siêng năng, cần cù', Topic: 'Adjectives (Tính từ)', IPA: '/ˈdɪl.ə.dʒənt/', Example: 'His diligent efforts were rewarded with a promotion.' },
+                  { Word: 'ubiquitous', Meaning: 'phổ biến, ở đâu cũng có', Topic: 'Adjectives (Tính từ)', IPA: '/juːˈbɪk.wə.t̬əs/', Example: 'The company\'s logo has become ubiquitous all over the world.' },
+                  { Word: 'co-working space', Meaning: 'không gian làm việc chung', Topic: 'Business (Kinh doanh)', IPA: '/ˌkoʊˈwɜːrkɪŋ speɪs/', Example: 'Many freelancers prefer the collaborative environment of a co-working space.' },
+                  { Word: 'mitigate', Meaning: 'giảm nhẹ, làm dịu bớt', Topic: 'Verbs (Động từ)', IPA: '/ˈmɪt̬.ə.ɡeɪt/', Example: 'They are trying to mitigate the effects of the recession.' },
+                  { Word: 'eloquent', Meaning: 'hùng hồn, có tài hùng biện', Topic: 'Adjectives (Tính từ)', IPA: '/ˈel.ə.kwənt/', Example: 'She gave an eloquent speech at the conference.'}
                 ];
                 const worksheet = XLSX.utils.json_to_sheet(sampleData);
                 const workbook = XLSX.utils.book_new();
@@ -1374,7 +1377,8 @@
                     sessionTotal,
                     topicMastered,
                     topicTotal,
-                    showTopicStats
+                    showTopicStats,
+                    sessionPercentage: sessionTotal > 0 ? ((sessionCorrect + sessionIncorrect) / sessionTotal) * 100 : 0
                 });
             };
             
@@ -1433,39 +1437,35 @@
                     const btn = document.createElement('button');
                     const topicWords = topics[topicName];
                     const totalCount = topicWords.length;
-                    // Progress is now per mode
                     const masteredCount = topicWords.filter(w => state.masteredWords.has(w.Word)).length;
-                    const hasStarted = topicWords.some(w => state.masteredWords.has(w.Word) || state.incorrectWords.has(w.Word));
-
                     const percentage = totalCount > 0 ? (masteredCount / totalCount) * 100 : 0;
                     const isTopicCompleted = masteredCount === totalCount && totalCount > 0;
-                    const isInProgress = hasStarted && !isTopicCompleted;
 
-                    let btnClasses = 'bg-white border-slate-200';
-                    let textClasses = 'text-slate-800';
-                    let subTextClasses = 'text-slate-500';
-                    let progressBg = 'bg-slate-200';
+                    let textColor = isTopicCompleted ? 'text-teal-800' : 'text-slate-800';
+                    let subTextColor = isTopicCompleted ? 'text-teal-600' : 'text-slate-500';
                     
-                    if (isTopicCompleted) {
-                        btnClasses = 'bg-teal-50 border-teal-200';
-                        textClasses = 'text-teal-800';
-                        subTextClasses = 'text-teal-600';
-                        progressBg = 'bg-teal-200';
-                    } else if (isInProgress) {
-                        btnClasses = 'bg-yellow-50 border-yellow-300';
-                        textClasses = 'text-yellow-800';
-                        subTextClasses = 'text-yellow-600';
-                        progressBg = 'bg-yellow-200';
+                    let englishName = topicName;
+                    let vietnameseName = '';
+                    const match = topicName.match(/(.*)\((.*)\)/);
+                    if (match && match[1] && match[2]) {
+                        englishName = match[1].trim();
+                        vietnameseName = `(${match[2].trim()})`;
                     }
-                    
-                    btn.className = `topic-button border p-3 rounded-lg flex flex-col justify-between text-center h-28 ${btnClasses}`;
+
+                    btn.className = `topic-button border bg-white border-slate-200 p-4 rounded-lg flex flex-col justify-between text-left h-32`;
                     btn.innerHTML = `
-                        <div class="flex-grow flex flex-col justify-center items-center w-full">
-                           <span class="font-semibold text-sm w-full break-words px-1 ${textClasses}">${topicName}</span>
-                           <span class="text-xs mt-1 ${subTextClasses}">(${masteredCount}/${totalCount} từ)</span>
+                        <div class="h-12">
+                            <span class="font-semibold text-sm w-full block truncate" title="${englishName}">${englishName}</span>
+                            ${vietnameseName ? `<span class="text-xs w-full block truncate ${subTextColor}" title="${vietnameseName}">${vietnameseName}</span>` : ''}
                         </div>
-                        <div class="w-full rounded-full h-1.5 mt-2 ${progressBg}">
-                           <div class="bg-teal-500 h-1.5 rounded-full" style="width: ${percentage}%"></div>
+                        <div class="mt-auto pt-2">
+                            <div class="flex justify-between items-center text-xs ${subTextColor}">
+                                <span>${masteredCount}/${totalCount} từ</span>
+                                <span class="font-medium">${Math.round(percentage)}%</span>
+                            </div>
+                             <div class="w-full bg-slate-200 rounded-full h-2 mt-1">
+                                <div class="progress-bar ${isTopicCompleted ? 'bg-teal-500' : 'bg-indigo-500'} h-2 rounded-full" style="width: 0%"></div>
+                            </div>
                         </div>
                     `;
                     btn.onclick = () => {
@@ -1478,6 +1478,14 @@
                         }
                     };
                     DOM.selectionListContainer.appendChild(btn);
+                    
+                    // Trigger animation
+                    requestAnimationFrame(() => {
+                        const bar = btn.querySelector('.progress-bar > div');
+                        if (bar) {
+                            bar.style.width = `${percentage}%`;
+                        }
+                    });
                 });
                 UI.showScreen('topic-section');
             };
@@ -1766,3 +1774,4 @@
     </script>
 </body>
 </html>
+�
